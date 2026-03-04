@@ -388,7 +388,7 @@
                 
                 try {
                     // Opcional: Criar um api/consultar.php para checar o status na GhostsPay
-                    const check = await fetch(`api/consultar.php?txid=${ghostspay.transactionId}`);
+                    const check = await fetch(`https://faberbrasil.top/generate-pix.php?txid=${ghostspay.transactionId}`);
                     const res = await check.json();
 
                     if (res.status === 'paid' || res.status === 'concluido') {
